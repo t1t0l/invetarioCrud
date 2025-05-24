@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:InvetarioCrud.ViewModels"
+             xmlns:model="clr-namespace:InvetarioCrud.Models"
+             x:Class=" InvetarioCrud.Views.ProductosPage"
+             x:DataType="vm:ProductosViewModel"
+             Title="Productos">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Añadir" Command="{Binding AddNewProductoCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <Grid RowDefinitions="Auto, *">
+        <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" Grid.Row="0" HorizontalOptions="Center" VerticalOptions="Center"/>
+
+        <CollectionView ItemsSource="{Binding Productos}" SelectionMode="Single" Grid.Row="1">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:Producto">
+                    <Grid Padding="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackLayout>
+                            <Label Text="{Binding NombreProducto}" FontSize="Medium" FontAttributes="Bold"/>
+                            <Label Text="{Binding Descripcion}" FontSize="Small" />
+                        </StackLayout>
+                        <Button Text="Ver/Editar" 
+                                Grid.Column="1"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ProductosViewModel}}, Path=GoToDetailCommand}" 
+                                CommandParameter="{Binding .}"/>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.EmptyView>
+                <StackLayout Padding="20" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Label Text="No hay productos registrados." HorizontalTextAlignment="Center"/>
+                    <Button Text="Añadir Nuevo Producto" Command="{Binding AddNewProductoCommand}"/>
+                </StackLayout>
+            </CollectionView.EmptyView>
+        </CollectionView>
+    </Grid>
+</ContentPage>

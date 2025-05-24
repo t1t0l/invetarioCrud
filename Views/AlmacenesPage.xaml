@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:InvetarioCrud.ViewModels"
+             xmlns:model="clr-namespace:InvetarioCrud.Models"
+             x:Class="InvetarioCrud.Views.AlmacenesPage"
+             x:DataType="vm:AlmacenesViewModel"
+             Title="Almacenes">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Añadir" Command="{Binding AddNewAlmacenCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <Grid RowDefinitions="Auto, *" Padding="10">
+        <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                           HorizontalOptions="Center" VerticalOptions="Center"
+                           Grid.Row="0" Grid.RowSpan="2" ZIndex="1"/>
+
+        <CollectionView ItemsSource="{Binding Almacenes}" SelectionMode="None" Grid.Row="1">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:Almacen">
+                    <Frame Padding="10" Margin="0,5" CornerRadius="5" BorderColor="LightGray">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackLayout>
+                                <Label Text="{Binding NombreAlmacen}" FontSize="Medium" FontAttributes="Bold"/>
+                                <Label Text="{Binding Descripcion}" FontSize="Small" MaxLines="2" LineBreakMode="TailTruncation"/>
+                            </StackLayout>
+                            <Button Text="Ver/Gestionar"
+                                    Grid.Column="1"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:AlmacenesViewModel}}, Path=GoToDetailCommand}"
+                                    CommandParameter="{Binding .}"
+                                    VerticalOptions="Center"/>
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.EmptyView>
+                <StackLayout Padding="20" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Label Text="No hay almacenes registrados." HorizontalTextAlignment="Center"/>
+                    <Button Text="Añadir Nuevo Almacén" Command="{Binding AddNewAlmacenCommand}"/>
+                </StackLayout>
+            </CollectionView.EmptyView>
+        </CollectionView>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,21 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:InvetarioCrud.ViewModels"
+             x:Class="InvetarioCrud.Views.ProductoDetailPage"
+             x:DataType="vm:ProductoDetailViewModel"
+             Title="{Binding PageTitle}">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="10" Padding="20">
+            <Label Text="Nombre del Producto:" />
+            <Entry Text="{Binding CurrentProducto.NombreProducto}" Placeholder="Ej: Laptop Gamer"/>
+
+            <Label Text="Descripción:" />
+            <Editor Text="{Binding CurrentProducto.Descripcion}" Placeholder="Ej: Especificaciones del producto" HeightRequest="100"/>
+
+            <Button Text="Guardar" Command="{Binding SaveProductoCommand}" Margin="0,20,0,0"/>
+            <Button Text="Eliminar" Command="{Binding DeleteProductoCommand}" IsVisible="{Binding CurrentProducto.ID, Converter={StaticResource IntToBoolConverter}}" BackgroundColor="Red" Margin="0,10,0,0"/>
+           
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

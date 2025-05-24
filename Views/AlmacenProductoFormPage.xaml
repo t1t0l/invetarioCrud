@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:InvetarioCrud.ViewModels"
+             xmlns:model="clr-namespace:InvetarioCrud.Models"
+             x:Class="InvetarioCrud.Views.AlmacenProductoFormPage"
+             x:DataType="vm:AlmacenProductoFormViewModel"
+             Title="{Binding PageTitle}">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="10" Padding="20">
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                               HorizontalOptions="Center" VerticalOptions="Center" ZIndex="10"/>
+
+            <Label Text="Producto:" FontAttributes="Bold"/>
+            <Picker ItemsSource="{Binding TodosLosProductos}"
+                    ItemDisplayBinding="{Binding NombreProducto}"
+                    SelectedItem="{Binding SelectedProducto}"
+                    IsEnabled="{Binding IsEditMode, Converter={StaticResource InverseBoolConverter}}"/>
+          
+            <Label Text="Si edita, el producto no se puede cambiar. Elimine y añada de nuevo si es necesario." 
+                   FontSize="Small" TextColor="Gray"
+                   IsVisible="{Binding IsEditMode}"/>
+
+
+            <Label Text="Cantidad:" FontAttributes="Bold"/>
+            <Entry Text="{Binding Cantidad}" Keyboard="Numeric"/>
+
+            <Label Text="Fecha de Vencimiento:" FontAttributes="Bold"/>
+            <DatePicker Date="{Binding FechaVencimiento}" Format="dd/MM/yyyy"/>
+
+            <Button Text="Guardar en Inventario" Command="{Binding SaveAlmacenProductoCommand}" Margin="0,20,0,0"/>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

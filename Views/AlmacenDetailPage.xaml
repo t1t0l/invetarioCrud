@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="InvetarioCrud.Views.AlmacenDetailPage"
+             xmlns:viewmodel="clr-namespace:InvetarioCrud.ViewModels"
+             xmlns:model="clr-namespace:InvetarioCrud.Models"
+             xmlns:converters="clr-namespace:InvetarioCrud.Resources.Converters"
+    x:DataType="viewmodel:AlmacenDetailViewModel"
+             Title="{Binding PageTitle}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+           
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                               IsVisible="{Binding IsBusy}"
+                               HorizontalOptions="CenterAndExpand"
+                               VerticalOptions="CenterAndExpand"
+                               Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+
+            <Frame Padding="15" CornerRadius="10" BorderColor="LightGray" HasShadow="True">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Detalles del Almacén" FontSize="Large" FontAttributes="Bold" HorizontalTextAlignment="Center"/>
+                    <BoxView HeightRequest="1" Color="LightGray" Margin="0,5"/>
+
+                    <Label Text="Nombre del Almacén:" FontSize="Small"/>
+                    <Entry Text="{Binding CurrentAlmacen.NombreAlmacen}"
+                           Placeholder="Ej: Bodega Principal"
+                           IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"/>
+
+                    <Label Text="Ubicación (Opcional):" FontSize="Small" Margin="0,10,0,0"/>
+                    <Editor Text="{Binding CurrentAlmacen.Ubicacion}"
+                            Placeholder="Ej: Zona Industrial, Calle Falsa 123"
+                            AutoSize="TextChanges"
+                            HeightRequest="60" 
+                        IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <Button Text="Guardar Almacén"
+                    Command="{Binding SaveAlmacenCommand}"
+                    IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
+                    Style="{StaticResource ButtonPrimaryStyle}"
+                    Margin="0,10,0,0"/>
+
+            <Frame Padding="15" CornerRadius="10" BorderColor="LightGray" HasShadow="True" Margin="0,20,0,0"
+                   IsVisible="{Binding IsNewAlmacen, Converter={StaticResource InverseBoolConverter}}">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Productos en este Almacén" FontSize="Large" FontAttributes="Bold" HorizontalTextAlignment="Center"/>
+                    <BoxView HeightRequest="1" Color="LightGray" Margin="0,5"/>
+
+                    <CollectionView ItemsSource="{Binding ProductosEnAlmacen}"
+                                    SelectionMode="None"
+                                    MinimumHeightRequest="150">
+                       
+                        <CollectionView.EmptyView>
+                            <StackLayout Padding="20" HorizontalOptions="Center" VerticalOptions="Center">
+                                <Label Text="Este almacén no tiene productos asignados."
+                                       HorizontalTextAlignment="Center"
+                                       TextColor="Gray"/>
+                            </StackLayout>
+                        </CollectionView.EmptyView>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="model:AlmacenProductoInfo">
+                                <Frame Padding="10" Margin="0,5" CornerRadius="8" BorderColor="LightSlateGray" BackgroundColor="WhiteSmoke">
+                                    <Grid ColumnDefinitions="*,Auto,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="8">
+                                        <Label Grid.Row="0" Grid.Column="0" Text="{Binding NombreProducto}" FontSize="Body" FontAttributes="Bold" VerticalTextAlignment="Center"/>
+                                        <Label Grid.Row="1" Grid.Column="0" FontSize="Small">
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <Span Text="Cantidad: " FontAttributes="Italic"/>
+                                                    <Span Text="{Binding Cantidad}"/>
+                                                    <Span Text="  |  Vence: " FontAttributes="Italic"/>
+                                                    <Span Text="{Binding FechaVencimiento, StringFormat='{0:dd/MM/yyyy}'}"/>
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
+
+                                        <Button Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Text="Editar"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:AlmacenDetailViewModel}}, Path=EditProductoInAlmacenCommand}"
+                                                CommandParameter="{Binding .}"
+                                                Style="{StaticResource ButtonOutlineStyle}"
+                                                HeightRequest="40"
+                                                VerticalOptions="Center"/>
+                                        <Button Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" Text="Borrar"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:AlmacenDetailViewModel}}, Path=DeleteProductoFromAlmacenCommand}"
+                                                CommandParameter="{Binding .}"
+                                                Style="{StaticResource ButtonDestructiveStyle}"
+                                                HeightRequest="40"
+                                                VerticalOptions="Center"/>
+                                    </Grid>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                    <Button Text="Añadir Producto al Almacén"
+                            Command="{Binding AddProductoToAlmacenAsync}"
+                            IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
+                            Style="{StaticResource ButtonSecondaryStyle}"
+                            Margin="0,10,0,0"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <Button Text="Eliminar Almacén"
+                    Command="{Binding DeleteAlmacenCommand}"
+                    IsVisible="{Binding IsNewAlmacen, Converter={StaticResource InverseBoolConverter}}"
+                    IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
+                    Style="{StaticResource ButtonDestructiveStyle}"
+                    Margin="0,20,0,0"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

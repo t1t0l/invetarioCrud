@@ -1,0 +1,20 @@
+﻿<?xml version = "1.0" encoding = "UTF-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:InvetarioCrud"
+             xmlns:converters="clr-namespace:InvetarioCrud.Resources.Converters"
+             x:Class="InvetarioCrud.App">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
+                <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+            <converters:EnumToStringConverter x:Key="EnumToStringConverter" />
+            <converters:NullableIntToBoolConverter x:Key="NullableIntToBoolConverter" />
+            <converters:DateTimeToBoolConverter x:Key="DateTimeToBoolConverter" />
+            <converters:StringToBoolConverterIfNotEmpty x:Key="StringToBoolConverterIfNotEmpty" />
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

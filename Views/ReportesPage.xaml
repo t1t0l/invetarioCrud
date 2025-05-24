@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:InvetarioCrud.ViewModels"
+             xmlns:model="clr-namespace:InvetarioCrud.Models"
+             xmlns:converters="clr-namespace:InvetarioCrud.Resources.Converters"
+             x:Class="InvetarioCrud.Views.ReportesPage"
+             x:DataType="vm:ReportesViewModel"
+             Title="Reportería">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+
+            <converters:EnumToStringConverter x:Key="EnumToStringConverter" />
+            <converters:NullableIntToBoolConverter x:Key="NullableIntToBoolConverter" />
+            <converters:DateTimeToBoolConverter x:Key="DateTimeToBoolConverter" />
+            <converters:StringToBoolConverterIfNotEmpty x:Key="StringToBoolConverterIfNotEmpty" />
+
+
+            <DataTemplate x:Key="StockConsolidadoDataTemplate" x:DataType="model:AlmacenProductoInfo">
+                <Frame Padding="10" Margin="0,5" BorderColor="LightSkyBlue" HasShadow="True">
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="{Binding NombreProducto}" FontAttributes="Bold" FontSize="Medium"/>
+                        <Label>
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="Stock Total: "/>
+                                    <Span Text="{Binding Cantidad}" FontAttributes="Bold"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                        <Label IsVisible="{Binding FechaVencimiento, Converter={StaticResource DateTimeToBoolConverter}}">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="Vence (más próximo): "/>
+                                    <Span Text="{Binding FechaVencimiento, StringFormat='{0:dd/MM/yyyy}'}" FontAttributes="Bold"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                    </VerticalStackLayout>
+                </Frame>
+            </DataTemplate>
+
+            <DataTemplate x:Key="StockPorAlmacenDataTemplate" x:DataType="model:AlmacenProductoInfo">
+                <Frame Padding="10" Margin="0,5" BorderColor="MediumSeaGreen" HasShadow="True">
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="{Binding NombreProducto}" FontAttributes="Bold" FontSize="Medium"/>
+                        <Label Text="{Binding NombreAlmacen, StringFormat='Almacén: {0}'}" IsVisible="{Binding NombreAlmacen, Converter={StaticResource StringToBoolConverterIfNotEmpty}}"/>
+                        <Label>
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="Cantidad: "/>
+                                    <Span Text="{Binding Cantidad}" FontAttributes="Bold"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                        <Label IsVisible="{Binding FechaVencimiento, Converter={StaticResource DateTimeToBoolConverter}}">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="Vence: "/>
+                                    <Span Text="{Binding FechaVencimiento, StringFormat='{0:dd/MM/yyyy}'}" FontAttributes="Bold"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                    </VerticalStackLayout>
+                </Frame>
+            </DataTemplate>
+
+            <DataTemplate x:Key="HistorialMovimientosDataTemplate" x:DataType="model:Movimiento">
+                <Frame Padding="10" Margin="0,5" BorderColor="Gainsboro" HasShadow="True">
+                    <VerticalStackLayout Spacing="3">
+                        <Label FontSize="Medium" FontAttributes="Bold">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="{Binding Tipo, Converter={StaticResource EnumToStringConverter}}"/>
+                                    <Span Text=" - "/>
+                                    <Span Text="{Binding NombreProducto}"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                        <Label>
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="Cantidad: "/>
+                                    <Span Text="{Binding Cantidad}" FontAttributes="Bold"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                        <Label Text="{Binding NombreAlmacenOrigen, StringFormat='Origen: {0}'}" IsVisible="{Binding IDAlmacenOrigen, Converter={StaticResource NullableIntToBoolConverter}}"/>
+                        <Label Text="{Binding NombreAlmacenDestino, StringFormat='Destino: {0}'}"/>
+                        <Label Text="{Binding FechaMovimiento, StringFormat='Fecha: {0:g}'}" FontSize="Small" TextColor="Gray"/>
+                    </VerticalStackLayout>
+                </Frame>
+            </DataTemplate>
+
+
+            <DataTemplate x:Key="DefaultReportDataTemplate">
+                <Frame Padding="10" Margin="0,5" BorderColor="OrangeRed" HasShadow="True">
+                    <Label Text="No hay una vista definida para este tipo de dato." TextColor="OrangeRed" HorizontalTextAlignment="Center"/>
+                </Frame>
+            </DataTemplate>
+
+
+            <vm:ReporteDataTemplateSelector x:Key="MyReporteDataTemplateSelector"
+                                             StockConsolidadoTemplate="{StaticResource StockConsolidadoDataTemplate}"
+                                             StockPorAlmacenTemplate="{StaticResource StockPorAlmacenDataTemplate}"
+                                             HistorialMovimientosTemplate="{StaticResource HistorialMovimientosDataTemplate}"
+                                             DefaultTemplate="{StaticResource DefaultReportDataTemplate}" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid>
+        <VerticalStackLayout Spacing="10" Padding="15">
+            <Label Text="Seleccione Tipo de Reporte:" FontAttributes="Bold"/>
+            <Picker ItemsSource="{Binding TiposReporte}"
+                    SelectedItem="{Binding SelectedTipoReporte}"
+                    Title="Seleccione un tipo"/>
+
+            <Label Text="Seleccione Almacén:" FontAttributes="Bold" IsVisible="{Binding ShowAlmacenPicker}"/>
+            <Picker ItemsSource="{Binding ListaAlmacenes}"
+                    ItemDisplayBinding="{Binding NombreAlmacen}"
+                    SelectedItem="{Binding SelectedAlmacenReporte}"
+                    IsVisible="{Binding ShowAlmacenPicker}"
+                    Title="Seleccione un almacén"/>
+
+            <Label Text="Seleccione Producto:" FontAttributes="Bold" IsVisible="{Binding ShowProductoPicker}"/>
+            <Picker ItemsSource="{Binding ListaProductos}"
+                    ItemDisplayBinding="{Binding NombreProducto}"
+                    SelectedItem="{Binding SelectedProductoReporte}"
+                    IsVisible="{Binding ShowProductoPicker}"
+                    Title="Seleccione un producto"/>
+
+            <Button Text="Generar Reporte" Command="{Binding GenerarReporteCommand}" Margin="0,10,0,10" FontAttributes="Bold" IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"/>
+
+
+            <BoxView HeightRequest="1" BackgroundColor="LightGray" Margin="0,10"/>
+
+            <Label Text="Resultados del Reporte:" FontSize="Large" FontAttributes="Bold" Margin="0,0,0,5"/>
+            <CollectionView ItemsSource="{Binding ResultadosReporte}" 
+                            SelectionMode="None" 
+                            HeightRequest="400" 
+                ItemTemplate="{StaticResource MyReporteDataTemplateSelector}">
+                <CollectionView.EmptyView>
+                    <StackLayout Padding="20" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+                        <Label Text="No hay resultados para mostrar." 
+                               HorizontalTextAlignment="Center" 
+                               TextColor="Gray"
+                               FontSize="Medium"/>
+                        <Label Text="Seleccione criterios y genere un reporte." 
+                               HorizontalTextAlignment="Center" 
+                               TextColor="LightGray"
+                               FontSize="Small"/>
+                    </StackLayout>
+                </CollectionView.EmptyView>
+            </CollectionView>
+        </VerticalStackLayout>
+
+
+        <Frame IsVisible="{Binding IsBusy}" BackgroundColor="#80000000" Padding="30" CornerRadius="10"
+               HorizontalOptions="Center" VerticalOptions="Center" ZIndex="10">
+            <VerticalStackLayout Spacing="10">
+                <ActivityIndicator IsRunning="{Binding IsBusy}" Color="White"/>
+                <Label Text="{Binding BusyText}" TextColor="White" HorizontalTextAlignment="Center"/>
+            </VerticalStackLayout>
+        </Frame>
+    </Grid>
+</ContentPage>

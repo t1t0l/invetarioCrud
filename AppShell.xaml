@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="InvetarioCrud.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:InvetarioCrud"
+    xmlns:views="clr-namespace:InvetarioCrud.Views"
+    Title="InvetarioCrud">
+
+    <FlyoutItem Title="Gestión" FlyoutIcon="dotnet_bot.png">
+        <ShellContent Title="Productos" Icon="dotnet_bot.png" ContentTemplate="{DataTemplate views:ProductosPage}" />
+        <ShellContent Title="Almacenes" Icon="dotnet_bot.png" ContentTemplate="{DataTemplate views:AlmacenesPage}" />
+    </FlyoutItem>
+    <ShellContent Title="Movimientos" Icon="dotnet_bot.png" ContentTemplate="{DataTemplate views:MovimientosPage}" />
+    <ShellContent Title="Reportes" Icon="dotnet_bot.png" ContentTemplate="{DataTemplate views:ReportesPage}" />
+
+</Shell>
